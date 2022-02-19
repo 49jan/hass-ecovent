@@ -19,9 +19,7 @@ fan:
 
 Reload Home Assistant
 
-## Usage
-
-### Services
+## Services
 
 The component uses most services from the fan component:
 - [Turn on](https://developers.home-assistant.io/docs/core/entity/fan/#turn-on)
@@ -30,7 +28,7 @@ The component uses most services from the fan component:
 - [Set speed percentage](https://developers.home-assistant.io/docs/core/entity/fan/#set-speed-percentage)
 
 
-#### Set airflow
+### Set airflow
 The ecovent component also adds a service to control airflow modes.
 
 Service name: `ecovent.set_airflow`
@@ -61,7 +59,7 @@ target:
 
 The 'airflow mode' is shown as a state attribute on the fan component and can be used in automations.
 
-#### Set humidity sensor ON
+### Set humidity sensor ON
 The ecovent component also adds a service to control humidity sensor.
 
 Service name: `ecovent.humidity_sensor_turn_on`
@@ -81,7 +79,7 @@ target:
   entity_id: fan.basement_fan  
 ```
 
-#### Set humidity sensor OFF
+### Set humidity sensor OFF
 The ecovent component also adds a service to control humidity sensor.
 
 Service name: `ecovent.humidity_sensor_turn_off`
@@ -101,7 +99,7 @@ target:
   entity_id: fan.basement_fan  
 ```
 
-#### Treshold of humidity sensor
+### Treshold of humidity sensor
 Set the humidity threshold when the fan turns on automatically.
 
 Service name: `ecovent.set_humidity_sensor_treshold_percentage`
@@ -125,7 +123,7 @@ target:
   entity_id: fan.basement_fan  
 ```
 
-#### Treshold of humidity sensor
+### Treshold of humidity sensor
 Clears the filter replacement warning.
 
 Service name: `ecovent.clear_filter_reminder`

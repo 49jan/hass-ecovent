@@ -64,6 +64,35 @@ fan:
     password: !secret blauberg_pass
 ```
 
+### Add Lovelace Card
+
+The following is a basic Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952) customization:
+
+![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/master/img/blauberg-fan-control-example.png?raw=true)
+
+```yaml
+- entity: fan.basement_fan 
+  type: custom:fan-control-entity-row
+```
+And another example with multiple Blauberg ventilation fans and ability to turn on/off the entire house:
+
+![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/master/img/blauberg-fan-control-example-2.png?raw=true)
+
+```yaml
+type: entities
+title: Blauberg Ventilation
+entities:
+  - entity: fan.basement_fan 
+    name: Basement
+    type: 'custom:fan-control-entity-row'
+  - entity: fan.bedrooms_fan
+    name: Bedrooms
+    type: 'custom:fan-control-entity-row'
+  - entity: fan.bathroom_fan
+    name: Master Bathroom
+    type: 'custom:fan-control-entity-row'
+```
+
 ## Tested fans
 
 This component has only been tested on two [Blauberg Vento Expert A50-1 W](https://blaubergventilatoren.de/en/product/vento-expert-a50-1-w) which are configured as master.
