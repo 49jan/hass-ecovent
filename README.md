@@ -68,7 +68,7 @@ fan:
 
 The following is a basic Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952) customization:
 
-![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/master/img/blauberg-fan-control-example.png?raw=true)
+![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/88124903f6bcde9aff00267a47db16804d6bef8a/img/blauberg-fan-control-example.png?raw=true)
 
 ```yaml
 - entity: fan.basement_fan 
@@ -76,7 +76,7 @@ The following is a basic Lovelace card using the [fan-control-entity-row](https:
 ```
 And another example with multiple Blauberg ventilation fans and ability to turn on/off the entire house:
 
-![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/master/img/blauberg-fan-control-example-2.png?raw=true)
+![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/88124903f6bcde9aff00267a47db16804d6bef8a/img/blauberg-fan-control-example-2.png?raw=true)
 
 ```yaml
 type: entities
