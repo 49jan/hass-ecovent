@@ -1,0 +1,42 @@
+# Describes the format for available fan services for ecovent fan
+set_airflow:
+  description: Set the airflow mode of Blauberg ecovent fan.
+  target:
+  fields:
+    airflow:
+      description: "Airflow mode of the ecovent fan. Allowed values are: 'ventialtion', 'heat_recovery', 'air_supply'."
+      required: true
+      example: "heat_recovery"
+      default: "heat_recovery"
+      selector:
+        select:
+          options:
+            - "heat_recovery"
+            - "ventilation"
+            - "air_supply"
+            -
+humidity_sensor_turn_on:
+  description: Turn the humidity sensor ON.
+  target:
+
+humidity_sensor_turn_off:
+  description: Turn the humidity sensor OFF.
+  target:
+
+set_humidity_sensor_treshold_percentage:
+  description: Set the humidity threshold when the fan turns on automatically.
+  target:
+  fields:
+    percentage:
+      description: "Humidity treshold in percentage. Allowed values are between 40 and 80."
+      required: true
+      example: "75"
+      selector:
+        number:
+          min: 40
+          max: 80
+
+clear_filter_reminder:
+  description: Clears the filter replacement warning.
+  target:
+

@@ -1,0 +1,12 @@
+{
+    "domain": "ecovent",
+    "name": "Eco Heat Recovery Ventilation",
+    "version": "0.0.9",
+    "documentation": "https://github.com/49jan/hass-ecovent/",
+    "issue_tracker": "https://github.com/49jan/hass-ecovent/issues",
+    "requirements": [],
+    "dependencies": [],
+    "config_flow": false,
+    "codeowners": ["@49jan"],
+    "iot_class": "local_polling"
+  }
