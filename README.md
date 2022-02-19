@@ -42,9 +42,9 @@ The device must be pre-connected to the network and in the same LAN as home-assi
 
 - **name** (*Optional*): Friendly name for this fan
 - **ip_address** (*Required*): IP address of this fan
-- **port** (*Optional*): Port of device. Need to be set if you have changed or your device has a different port than the default value. The default port is 4000
+- **port** (*Optional*): Port of device. Need to be set if you have changed port or your device has a different port than the default value. The default port is 4000
 - **device_id** (*Optional*): Id of device.
-- **password** (*Optional*): Password of the fan. Necessary to set if you have changed or your device has a different password than the default. The default pass is 1111
+- **password** (*Optional*): Password of the fan. Necessary to set if you have changed password or your device has a different password than the default. The default pass is 1111
 
 #### Configuration Example
 
@@ -99,8 +99,7 @@ This component has only been tested on two [Blauberg Vento Expert A50-1 W](https
 
 There are fans from Blauberg and Flexit that are identical and should work, but I have not verified that.
 
-- [Single room ventilator Roomie Dual](https://www.flexit.no/en/products/single_room_ventilator/single_room_ventilator_roomie_dual/single_room_ventilator_roomie_dual/)
-- [Blauberg VENTO Expert A50-1 W](https://blaubergventilatoren.de/en/product/vento-expert-a50-1-w)
 - [Blauberg Vento Expert Duo A30-1 W V.2](https://blaubergventilatoren.de/en/series/vento-expert-duo-a30-1-s10-w-v2)
 - Blauberg Vento Expert A30 W V.2
-
+- [Twinfresh Expert RW1-50](http://vents-us.com/item/5262/VENTS_TwinFresh_Expert_RW1-50-2_Wi-Fi/)
+- [Single room ventilator Roomie Dual](https://www.flexit.no/en/products/single_room_ventilator/single_room_ventilator_roomie_dual/single_room_ventilator_roomie_dual/)
