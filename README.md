@@ -48,8 +48,7 @@ The device must be pre-connected to the network and in the same LAN as home-assi
 
 #### Configuration Example
 
-This example configuration assumes that the relay switches are already setup in Home Assistant, since that setup differs
-substantially depending on the type of relay hardware being used (e.g. Tasmota MQTT vs WeMo Maker).
+This configuration example assumes that the fan is already paired on the local network.
 
 ```yaml
 fan:
