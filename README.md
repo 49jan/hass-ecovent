@@ -75,7 +75,7 @@ The following is a basic Lovelace card using the [fan-percent-button-row](https:
 ```
 And another example with multiple Blauberg ventilation fans and ability to turn on/off the entire house:
 
-![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/88124903f6bcde9aff00267a47db16804d6bef8a/img/blauberg-fan-control-example-2.png?raw=true)
+![Blauberg Simple Example](https://raw.githubusercontent.com/49jan/hass-ecovent/main/img/blauberg-fan-control-example-2.png)
 
 ```yaml
 type: entities
