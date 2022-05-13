@@ -1,5 +1,3 @@
-# from homeassistant.components.fan import SPEED_HIGH, SPEED_LOW, SPEED_MEDIUM, SPEED_OFF
-# from homeassistant.const import STATE_OFF, STATE_ON
 
 MY_DOMAIN = "ecovent"
 
@@ -27,3 +25,6 @@ ATTR_HUMIDITY = "humidity"
 ATTR_HUMIDITY_SENSOR_STATUS = "humidity_sensor_status"  #
 ATTR_HUMIDITY_SENSOR_TRESHOLD = "humidity_sensor_treshold"  #
 ATTR_MACHINE_HOURS = "machine_hours"  #
+
+""" PRESET MODES """
+PRESET_MODE_ON = "on"

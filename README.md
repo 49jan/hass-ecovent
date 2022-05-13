@@ -65,13 +65,13 @@ fan:
 
 ### Add Lovelace Card
 
-The following is a basic Lovelace card using the [fan-control-entity-row](https://community.home-assistant.io/t/lovelace-fan-control-entity-row/102952) customization:
+The following is a basic Lovelace card using the [fan-percent-button-row](https://github.com/finity69x2/fan-percent-button-row) customization:
 
 ![Blauberg Simple Example](https://github.com/49jan/hass-ecovent/blob/88124903f6bcde9aff00267a47db16804d6bef8a/img/blauberg-fan-control-example.png?raw=true)
 
 ```yaml
 - entity: fan.basement_fan 
-  type: custom:fan-control-entity-row
+  type: custom:fan-percent-button-row
 ```
 And another example with multiple Blauberg ventilation fans and ability to turn on/off the entire house:
 
@@ -83,13 +83,12 @@ title: Blauberg Ventilation
 entities:
   - entity: fan.basement_fan 
     name: Basement
-    type: 'custom:fan-control-entity-row'
+    type: 'custom:fan-percent-button-row'
   - entity: fan.bedrooms_fan
-    name: Bedrooms
-    type: 'custom:fan-control-entity-row'
+    type: 'custom:fan-percent-button-row'
   - entity: fan.bathroom_fan
     name: Master Bathroom
-    type: 'custom:fan-control-entity-row'
+    type: 'custom:fan-percent-button-row'
 ```
 
 ## Tested fans
