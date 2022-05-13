@@ -13,13 +13,8 @@ from homeassistant.components.fan import (
     ATTR_PERCENTAGE,
     ENTITY_ID_FORMAT,
     PLATFORM_SCHEMA,
-    SPEED_HIGH,
-    SPEED_LOW,
-    SPEED_MEDIUM,
-    SPEED_OFF,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_SET_SPEED,
     FanEntity,
+    FanEntityFeature,
 )
 from homeassistant.const import (
     CONF_DEVICE_ID,
@@ -50,6 +45,7 @@ from .const import (
     ATTR_HUMIDITY_SENSOR_STATUS,
     ATTR_HUMIDITY_SENSOR_TRESHOLD,
     ATTR_MACHINE_HOURS,
+    PRESET_MODE_ON,
     SERVICE_CLEAR_FILTER_REMINDER,
     SERVICE_SET_AIRFLOW,
     SERVICE_HUMIDITY_SENSOR_TURN_ON,
@@ -145,9 +141,9 @@ class EcoVentFan(FanEntity):
 
     speeds = {
         0: "standby",
-        1: SPEED_LOW,
-        2: SPEED_MEDIUM,
-        3: SPEED_HIGH,
+        1: "low",
+        2: "medium",
+        3: "high",
         0xFF: "manual",
     }
 
@@ -267,7 +263,7 @@ class EcoVentFan(FanEntity):
         self._password = password
 
         # HA attribute
-        self._attr_preset_modes = ["standby", SPEED_LOW, SPEED_MEDIUM, SPEED_HIGH]
+        self._attr_preset_modes = [PRESET_MODE_ON]
 
         if fan_id == "DEFAULT_DEVICEID":
             self.get_param("device_search")
@@ -316,31 +312,33 @@ class EcoVentFan(FanEntity):
     # pylint: disable=arguments-differ
     async def async_turn_on(
         self,
-        speed: str | None = None,
         percentage: int | None = None,
         preset_mode: str | None = None,
         **kwargs,
     ) -> None:
         """Turn on the fan."""
-        if self.state == "off":
-            if speed != None:
-                await self.async_set_preset_mode(speed)  # speed is depricated
-            if percentage != None:
+        if self.state == "off":  
+
+            if percentage is not None:
+                if percentage < 2:
+                    percentage = 33  # Set to LOW
                 await self.async_set_percentage(percentage)
-            if preset_mode != None:
+
+            if preset_mode is None:
+                await self.async_set_preset_mode(PRESET_MODE_ON)  # Set to defalut
+            else:
                 await self.async_set_preset_mode(preset_mode)
 
             self.turn_on_ventilation()
 
     def turn_on(
         self,
-        speed: str | None = None,
         percentage: int | None = None,
         preset_mode: str | None = None,
         **kwargs,
     ) -> None:
         """Turn on the fan."""
-        self.async_turn_on(speed, percentage, preset_mode, **kwargs)
+        self.async_turn_on(percentage, preset_mode, **kwargs)
 
     async def async_turn_off(self):
         """Turn the entity off."""
@@ -352,28 +350,14 @@ class EcoVentFan(FanEntity):
         """Turn the entity off."""
         self.async_turn_off()
 
-    async def async_set_preset_mode(self, preset_mode: str) -> None:
-        LOG.info(f"async_set_preset_mode {preset_mode}")
-        """Set new preset mode."""
-        speed = self.preset_mode_to_speed(preset_mode)
-        if speed == 0:
-            await self.async_turn_off()
-        else:
-            self.set_speed(speed)
+    def set_preset_mode(self, preset_mode: str) -> None:
+        LOG.info(f"Set async_set_preset_mode to: {preset_mode}")
+        self._attr_preset_mode = preset_mode
 
-    def preset_mode_to_speed(
-        self, preset_mode: str
-    ) -> int:  # pylint: disable=no-self-use
-        # if preset_mode == SPEED_OFF:
-        #    return 0
-        if preset_mode == SPEED_LOW:
-            return 1
-        elif preset_mode == SPEED_MEDIUM:
-            return 2
-        elif preset_mode == SPEED_HIGH:
-            return 3
+        if preset_mode == PRESET_MODE_ON:
+            self.turn_on_ventilation()
         else:
-            return 0
+            self.turn_off()
 
     async def async_set_percentage(self, percentage: int) -> None:
         LOG.info(f"async_set_percentage: {percentage}")
@@ -382,6 +366,7 @@ class EcoVentFan(FanEntity):
             await self.async_turn_off()
         else:
             self.set_man_speed_percent(percentage)
+            self.turn_on_ventilation()
 
     async def async_set_airflow(self, airflow: str):
         """Set the airflow of the fan."""
@@ -448,7 +433,7 @@ class EcoVentFan(FanEntity):
 
     @property
     def supported_features(self) -> int:
-        return SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE
+        return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
 
     # ========================== HA implementation ==========================
 
