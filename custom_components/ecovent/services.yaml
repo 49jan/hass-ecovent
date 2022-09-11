@@ -4,7 +4,7 @@ set_airflow:
   target:
   fields:
     airflow:
-      description: "Airflow mode of the ecovent fan. Allowed values are: 'ventialtion', 'heat_recovery', 'air_supply'."
+      description: "Airflow mode of the ecovent fan. Allowed values are: 'ventilation', 'heat_recovery', 'air_supply'."
       required: true
       example: "heat_recovery"
       default: "heat_recovery"
