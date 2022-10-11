@@ -317,7 +317,7 @@ class EcoVentFan(FanEntity):
         **kwargs,
     ) -> None:
         """Turn on the fan."""
-        if self.state == "off":  
+        if self.state == "off":
 
             if percentage is not None:
                 if percentage < 2:
@@ -862,10 +862,17 @@ class EcoVentFan(FanEntity):
 
     @filter_timer_countdown.setter
     def filter_timer_countdown(self, input):
-        val = int(input, 16).to_bytes(3, "big")
-        self._filter_timer_countdown = (
-            str(val[2]) + "d " + str(val[1]) + "h " + str(val[0]) + "m "
-        )
+        result = ""
+        try:
+            val = int(input, 16).to_bytes(3, "big")
+            result = str(val[2]) + "d " + str(val[1]) + "h " + str(val[0]) + "m "
+        except Exception as e:
+            LOG.error(
+                f"Cannot parse filter_timer_countdown value '{str(input)}': '{str(e)}'"
+            )
+            result = "Unknown value"
+
+        self._filter_timer_countdown = result
 
     @property
     def boost_time(self):
@@ -952,15 +959,24 @@ class EcoVentFan(FanEntity):
 
     @machine_hours.setter
     def machine_hours(self, input):
-        val = int(input, 16).to_bytes(4, "big")
-        self._machine_hours = (
-            str(int.from_bytes(val[2:3], "big"))
-            + "d "
-            + str(val[1])
-            + "h "
-            + str(val[0])
-            + "m "
-        )
+        result = ""
+        try:
+            val = int(input, 16).to_bytes(4, "big")
+            result = (
+                str(int.from_bytes(val[2:3], "big"))
+                + "d "
+                + str(val[1])
+                + "h "
+                + str(val[0])
+                + "m "
+            )
+        except Exception as e:
+            LOG.error(
+                f"Cannot parse machine_hours value '{str(input)}': '{str(e)}'"
+            )
+            result = "Unknown value"
+
+        self._machine_hours = result
 
     @property
     def alarm_status(self):
