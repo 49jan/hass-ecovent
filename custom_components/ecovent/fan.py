@@ -45,6 +45,7 @@ from .const import (
     ATTR_HUMIDITY_SENSOR_STATUS,
     ATTR_HUMIDITY_SENSOR_TRESHOLD,
     ATTR_MACHINE_HOURS,
+    ATTR_UNIT_TYPE,
     PRESET_MODE_ON,
     SERVICE_CLEAR_FILTER_REMINDER,
     SERVICE_SET_AIRFLOW,
@@ -174,6 +175,7 @@ class EcoVentFan(FanEntity):
         0x0300: "Vento Expert A50-1/A85-1/A100-1 W V.2",
         0x0400: "Vento Expert Duo A30-1 W V.2",
         0x0500: "Vento Expert A30 W V.2",
+        0x9999: "Unknown Type"
     }
 
     wifi_operation_modes = {1: "client", 2: "ap"}
@@ -416,6 +418,7 @@ class EcoVentFan(FanEntity):
 
         data[ATTR_AIRFLOW_MODES] = self.airflows
         data["device_id"] = self.id
+        data[ATTR_UNIT_TYPE] = self.unit_type
 
         data[ATTR_AIRFLOW] = self.airflow
         data[ATTR_HUMIDITY] = self.humidity
@@ -1144,8 +1147,14 @@ class EcoVentFan(FanEntity):
 
     @unit_type.setter
     def unit_type(self, input):
-        val = int(input, 16)
-        self._unit_type = self.unit_types[val]
+        try:
+            val = int(input, 16)
+            self._unit_type = self.unit_types[val]
+        except Exception as e:
+            LOG.info(
+                f"Cannot parse unit_type value '{str(input)}': '{str(e)}'"
+            )
+            self._unit_type = self.unit_types[0x9999]
 
     @property
     def night_mode_timer(self):
