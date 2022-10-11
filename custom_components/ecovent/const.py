@@ -19,6 +19,7 @@ CONF_DEFAULT_PASSWORD = "1111"
 """ Atributes constants """
 ATTR_AIRFLOW = "airflow"
 ATTR_AIRFLOW_MODES = "airflow_modes"  #
+ATTR_UNIT_TYPE = "unit_type"
 ATTR_FILTER_REPLACEMENT_STATUS = "filter_replacement_status"  #
 ATTR_FILTER_TIMER_COUNTDOWN = "filter_timer_countdown"  #
 ATTR_HUMIDITY = "humidity"
