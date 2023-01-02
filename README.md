@@ -43,7 +43,7 @@ The device must be pre-connected to the network and in the same LAN as home-assi
 - **name** (*Optional*): Friendly name for this fan
 - **ip_address** (*Required*): IP address of this fan
 - **port** (*Optional*): Port of device. Need to be set if you have changed port or your device has a different port than the default value. The default port is 4000
-- **device_id** (*Optional*): Id of device.
+- **device_id** (*Optional*): The ID of the device. Sometimes the integration fails to get the device ID. In this case, try restarting HomeAssistant or manually enter your device ID in this field.
 - **password** (*Optional*): Password of the fan. Necessary to set if you have changed password or your device has a different password than the default. The default pass is 1111
 
 #### Configuration Example

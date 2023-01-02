@@ -78,6 +78,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     fan = EcoVentFan(
         hass, config, device_ip_address, device_pass, device_id, name, device_port
     )
+
     async_add_entities([fan], update_before_add=True)
 
     # expose service call APIs
@@ -266,10 +267,17 @@ class EcoVentFan(FanEntity):
 
         # HA attribute
         self._attr_preset_modes = [PRESET_MODE_ON]
+        self._state = self.states[0]
 
         if fan_id == "DEFAULT_DEVICEID":
-            self.get_param("device_search")
-            self._id = self.device_search
+            try:
+                self.get_param("device_search")
+                self._id = self.device_search
+            except Exception as e:
+                LOG.error(
+                    f"An error occurred while establishing the ecovent IP '{str(host)}' - a device ID is not found. Try restarting HA or check your configuration."
+                )
+                raise e
 
         # Set HA unique_id
         self._attr_unique_id = self._id
@@ -281,35 +289,6 @@ class EcoVentFan(FanEntity):
     async def async_added_to_hass(self) -> None:
         """Once entity has been added to HASS, subscribe to state changes."""
         await super().async_added_to_hass()
-
-        # setup listeners to track changes
-        async_track_state_change_event(
-            self.hass,
-            [
-                self.state,
-                self.speed,
-                self.humidity,
-                self.airflow,
-                self.filter_replacement_status,
-            ],
-            self._state_changed,
-        )
-
-    @callback
-    def _state_changed(self, event):
-        """Whenever state, speed, humidity or airflow change state, the fan speed needs to be updated"""
-        entity = event.data.get("entity_id")
-        to_state = event.data["new_state"].state
-
-        ## sometimes there is no from_state
-        old_state = event.data.get("old_state")
-        from_state = old_state.state if old_state else None
-
-        if not from_state or to_state != from_state:
-            LOG.info(
-                f"{entity} changed from {from_state} to {to_state}, updating '{self._name}'"
-            )
-            self.schedule_update_ha_state()
 
     # pylint: disable=arguments-differ
     async def async_turn_on(
@@ -974,9 +953,7 @@ class EcoVentFan(FanEntity):
                 + "m "
             )
         except Exception as e:
-            LOG.error(
-                f"Cannot parse machine_hours value '{str(input)}': '{str(e)}'"
-            )
+            LOG.error(f"Cannot parse machine_hours value '{str(input)}': '{str(e)}'")
             result = "Unknown value"
 
         self._machine_hours = result
@@ -1151,9 +1128,7 @@ class EcoVentFan(FanEntity):
             val = int(input, 16)
             self._unit_type = self.unit_types[val]
         except Exception as e:
-            LOG.info(
-                f"Cannot parse unit_type value '{str(input)}': '{str(e)}'"
-            )
+            LOG.info(f"Cannot parse unit_type value '{str(input)}': '{str(e)}'")
             self._unit_type = self.unit_types[0x9999]
 
     @property
