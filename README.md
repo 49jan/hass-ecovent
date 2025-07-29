@@ -5,6 +5,10 @@
 Home Assistant custom component for heat recovery ventilation units.
 See below sections for details about 'supported' ventilation units.
 
+## Compatibility
+
+✅ **Updated for Home Assistant 2024.5.0+** - Version 1.4 includes fixes for the latest Home Assistant fan entity requirements.
+
 ## Installation
 
 ### HACS

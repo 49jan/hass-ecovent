@@ -268,6 +268,7 @@ class EcoVentFan(FanEntity):
         # HA attribute
         self._attr_preset_modes = [PRESET_MODE_ON]
         self._state = self.states[0]
+        self._speed = self.speeds[0]  # Initialize speed
 
         if fan_id == "DEFAULT_DEVICEID":
             try:
@@ -319,9 +320,12 @@ class EcoVentFan(FanEntity):
         **kwargs,
     ) -> None:
         """Turn on the fan."""
-        self.async_turn_on(percentage, preset_mode, **kwargs)
+        if self.state == "off":
+            if percentage is not None and percentage >= 2:
+                self.set_man_speed_percent(percentage)
+            self.turn_on_ventilation()
 
-    async def async_turn_off(self):
+    async def async_turn_off(self, **kwargs):
         """Turn the entity off."""
         if self.state == "on":
             self.turn_off_ventilation()
@@ -329,7 +333,8 @@ class EcoVentFan(FanEntity):
     # override orignial entity method
     def turn_off(self, **kwargs: Any) -> None:
         """Turn the entity off."""
-        self.async_turn_off()
+        if self.state == "on":
+            self.turn_off_ventilation()
 
     def set_preset_mode(self, preset_mode: str) -> None:
         LOG.info(f"Set async_set_preset_mode to: {preset_mode}")
@@ -415,7 +420,28 @@ class EcoVentFan(FanEntity):
 
     @property
     def supported_features(self) -> int:
-        return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE
+        return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE | FanEntityFeature.TURN_ON | FanEntityFeature.TURN_OFF
+
+    @property
+    def is_on(self) -> bool:
+        """Return true if the entity is on."""
+        return self.state != "off"
+    
+    @property 
+    def percentage(self) -> int | None:
+        """Return the current speed percentage."""
+        if self.state == "off":
+            return 0
+        elif hasattr(self, '_speed'):
+            if self._speed == "low":
+                return 33
+            elif self._speed == "medium":
+                return 66
+            elif self._speed == "high":
+                return 100
+            elif self._speed == "standby":
+                return 1
+        return None
 
     # ========================== HA implementation ==========================
 
