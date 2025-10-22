@@ -1,7 +1,7 @@
 {
     "domain": "ecovent",
     "name": "Eco Heat Recovery Ventilation",
-    "version": "1.4",
+    "version": "1.5",
     "documentation": "https://github.com/49jan/hass-ecovent/",
     "issue_tracker": "https://github.com/49jan/hass-ecovent/issues",
     "requirements": [],

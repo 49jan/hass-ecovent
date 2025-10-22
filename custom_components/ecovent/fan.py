@@ -176,6 +176,10 @@ class EcoVentFan(FanEntity):
         0x0300: "Vento Expert A50-1/A85-1/A100-1 W V.2",
         0x0400: "Vento Expert Duo A30-1 W V.2",
         0x0500: "Vento Expert A30 W V.2",
+        # TwinFresh and Winzel models (commonly reported)
+        0x0600: "TwinFresh Expert RW1-50",
+        0x0700: "Winzel Expert WiFi RW1-50 P", 
+        0x0800: "Flexit Roomie Dual",
         0x9999: "Unknown Type"
     }
 
@@ -269,6 +273,16 @@ class EcoVentFan(FanEntity):
         self._attr_preset_modes = [PRESET_MODE_ON]
         self._state = self.states[0]
         self._speed = self.speeds[0]  # Initialize speed
+        
+        # Initialize critical attributes to prevent AttributeError
+        self._unit_type = self.unit_types.get(0x9999, "Unknown Type")
+        self._airflow = "Unknown"
+        self._humidity = "0 %"
+        self._humidity_status = "off"
+        self._humidity_treshold = "50 %"
+        self._filter_replacement_status = "off"
+        self._filter_timer_countdown = "Unknown"
+        self._machine_hours = "Unknown"
 
         if fan_id == "DEFAULT_DEVICEID":
             try:
@@ -402,19 +416,20 @@ class EcoVentFan(FanEntity):
 
         data[ATTR_AIRFLOW_MODES] = self.airflows
         data["device_id"] = self.id
-        data[ATTR_UNIT_TYPE] = self.unit_type
+        data[ATTR_UNIT_TYPE] = getattr(self, '_unit_type', 'Unknown Type')
 
-        data[ATTR_AIRFLOW] = self.airflow
-        data[ATTR_HUMIDITY] = self.humidity
+        # Safely access attributes with fallbacks
+        data[ATTR_AIRFLOW] = getattr(self, '_airflow', 'Unknown')
+        data[ATTR_HUMIDITY] = getattr(self, '_humidity', '0 %')
 
-        data[ATTR_HUMIDITY_SENSOR_STATUS] = self.humidity_status
-        data[ATTR_HUMIDITY_SENSOR_TRESHOLD] = self.humidity_treshold
+        data[ATTR_HUMIDITY_SENSOR_STATUS] = getattr(self, '_humidity_status', 'off')
+        data[ATTR_HUMIDITY_SENSOR_TRESHOLD] = getattr(self, '_humidity_treshold', '50 %')
 
         # data["night_mode_timer"] = self.night_mode_timer
 
-        data[ATTR_FILTER_REPLACEMENT_STATUS] = self.filter_replacement_status
-        data[ATTR_FILTER_TIMER_COUNTDOWN] = self.filter_timer_countdown
-        data[ATTR_MACHINE_HOURS] = self.machine_hours
+        data[ATTR_FILTER_REPLACEMENT_STATUS] = getattr(self, '_filter_replacement_status', 'off')
+        data[ATTR_FILTER_TIMER_COUNTDOWN] = getattr(self, '_filter_timer_countdown', 'Unknown')
+        data[ATTR_MACHINE_HOURS] = getattr(self, '_machine_hours', 'Unknown')
 
         return data
 
@@ -1152,10 +1167,12 @@ class EcoVentFan(FanEntity):
     def unit_type(self, input):
         try:
             val = int(input, 16)
-            self._unit_type = self.unit_types[val]
+            self._unit_type = self.unit_types.get(val, f"Unknown Type (0x{val:04X})")
+            if val not in self.unit_types:
+                LOG.info(f"Unknown unit_type detected: 0x{val:04X} ({val}). Please report this to the integration developer.")
         except Exception as e:
-            LOG.info(f"Cannot parse unit_type value '{str(input)}': '{str(e)}'")
-            self._unit_type = self.unit_types[0x9999]
+            LOG.warning(f"Cannot parse unit_type value '{str(input)}': '{str(e)}'")
+            self._unit_type = "Unknown Type"
 
     @property
     def night_mode_timer(self):

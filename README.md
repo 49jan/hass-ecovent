@@ -95,13 +95,44 @@ entities:
     type: 'custom:fan-percent-button-row'
 ```
 
-## Tested fans
+## Compatible Devices
 
 This component has only been tested on two [Blauberg Vento Expert A50-1 W](https://blaubergventilatoren.de/en/product/vento-expert-a50-1-w) which are configured as master.
 
-There are fans from Blauberg and Flexit that are identical and should work, but I have not verified that.
-
+- [Blauberg Vento Expert A50-1 W](https://blaubergventilatoren.de/en/product/vento-expert-a50-1-w) *(Original test device)*
 - [Blauberg Vento Expert Duo A30-1 W V.2](https://blaubergventilatoren.de/en/series/vento-expert-duo-a30-1-s10-w-v2)
 - Blauberg Vento Expert A30 W V.2
 - [Twinfresh Expert RW1-50](http://vents-us.com/item/5262/VENTS_TwinFresh_Expert_RW1-50-2_Wi-Fi/)
+- Winzel Expert WiFi RW1-50 P *(User confirmed)*
 - [Single room ventilator Roomie Dual](https://www.flexit.no/en/products/single_room_ventilator/single_room_ventilator_roomie_dual/single_room_ventilator_roomie_dual/)
+
+### 🔄 Should Work (Same Protocol)
+
+These devices use the same communication protocol and should be compatible:
+
+- Blauberg Vento Expert A85-1 W V.2
+- Blauberg Vento Expert A100-1 W V.2
+- Other Blauberg Vento Expert series with WiFi
+- Other TwinFresh Expert WiFi models
+- Other Flexit single room ventilators with WiFi
+
+## Unknown Device Models
+
+If your device shows as "Unknown Type" in Home Assistant, it should still work! The integration is designed to be robust and will:
+
+1. **Continue functioning** with all basic fan controls
+2. **Display "Unknown Type"** instead of crashing
+3. **Log the device information** to help identify the model
+
+### 📝 How to Report Unknown Models
+
+If you have a working device that shows as "Unknown Type", please help us identify it:
+
+1. **Check Home Assistant logs** (`Settings → System → Logs`)
+2. **Look for entries** like: `Unknown unit_type detected: 0x1234`
+3. **Create an issue** on [GitHub](https://github.com/49jan/hass-ecovent/issues) with:
+   - Device model and manufacturer
+   - The hex code from the log (e.g., `0x1234`)
+   - Device photo/specifications if possible
+
+This helps us add proper support for your device model!

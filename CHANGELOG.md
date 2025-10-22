@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.5] - 2025-10-22
+
+### Fixed
+- Fixed AttributeError for '_unit_type' object when accessing unknown device models
+- Added proper initialization of critical attributes to prevent runtime errors
+- Added support for additional device models (TwinFresh, Winzel, Flexit)
+- Made extra_state_attributes method more robust with safe attribute access
+- Improved error handling for unknown unit types with better logging
+
+### Added
+- Support for Winzel Expert WiFi RW1-50 P model
+- Support for TwinFresh Expert RW1-50 model
+- Support for Flexit Roomie Dual model
+- Better logging for unknown device types to help with future support
+
 ## [1.4] - 2025-07-29
 
 ### Fixed
