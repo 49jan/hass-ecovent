@@ -283,23 +283,41 @@ class EcoVentFan(FanEntity):
         self._filter_replacement_status = "off"
         self._filter_timer_countdown = "Unknown"
         self._machine_hours = "Unknown"
+        self._device_search = "Unknown"  # Initialize device_search to prevent AttributeError
 
         if fan_id == "DEFAULT_DEVICEID":
             try:
+                # Store initial value to check if it changes after get_param
+                initial_device_search = self._device_search
                 self.get_param("device_search")
-                self._id = self.device_search
+                
+                # Check if device_search was successfully retrieved (changed from initial "Unknown")
+                if hasattr(self, '_device_search') and self._device_search != initial_device_search and self._device_search:
+                    self._id = self.device_search
+                    LOG.info(f"Successfully retrieved device ID '{self._id}' from EcoVent device at '{str(host)}'")
+                else:
+                    LOG.warning(
+                        f"Could not retrieve device ID from EcoVent device at '{str(host)}'. "
+                        f"Please specify 'device_id' in your configuration."
+                    )
+                    self._id = f"ecovent_{host.replace('.', '_')}"  # Fallback ID
             except Exception as e:
-                LOG.error(
-                    f"An error occurred while establishing the ecovent IP '{str(host)}' - a device ID is not found. Try restarting HA or check your configuration."
+                LOG.warning(
+                    f"Error connecting to EcoVent device at '{str(host)}': {str(e)}. "
+                    f"Using fallback device ID. Consider specifying 'device_id' in configuration."
                 )
-                raise e
+                self._id = f"ecovent_{host.replace('.', '_')}"  # Fallback ID
 
         # Set HA unique_id
         self._attr_unique_id = self._id
 
-        self.update()
-
-        LOG.info(f"Created EcoVent fan controller '{self._host}'")
+        # Try to update device state, but don't fail if it doesn't work
+        try:
+            self.update()
+            LOG.info(f"Created EcoVent fan controller '{self._host}' with device ID '{self._id}'")
+        except Exception as e:
+            LOG.warning(f"Could not update initial state for EcoVent device '{self._host}': {str(e)}")
+            LOG.info(f"Created EcoVent fan controller '{self._host}' with device ID '{self._id}' (initial state update failed)")
 
     async def async_added_to_hass(self) -> None:
         """Once entity has been added to HASS, subscribe to state changes."""
