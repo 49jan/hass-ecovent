@@ -14,7 +14,6 @@ set_airflow:
             - "heat_recovery"
             - "ventilation"
             - "air_supply"
-            -
 humidity_sensor_turn_on:
   description: Turn the humidity sensor ON.
   target:

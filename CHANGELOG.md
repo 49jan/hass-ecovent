@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Improved error handling for unknown unit types with better logging
 - Fixed device ID auto-detection logic that never worked due to initialization order
 - Added graceful fallback when device ID cannot be auto-detected
+- Fixed services.yaml airflow selector with empty option that broke HA UI (closes #11)
 
 ### Added
 - Support for Winzel Expert WiFi RW1-50 P model
