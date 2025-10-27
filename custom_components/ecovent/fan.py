@@ -872,8 +872,10 @@ class EcoVentFan(FanEntity):
     def filter_timer_countdown(self, input):
         result = ""
         try:
-            val = int(input, 16).to_bytes(3, "big")
-            result = str(val[2]) + "d " + str(val[1]) + "h " + str(val[0]) + "m "
+            raw_bytes = int(input, 16).to_bytes(4, "big")
+            minutes, hours = raw_bytes[0], raw_bytes[1]
+            days = int.from_bytes(raw_bytes[2:], "little")
+            result = f"{days}d {hours}h {minutes}m "
         except Exception as e:
             LOG.error(
                 f"Cannot parse filter_timer_countdown value '{str(input)}': '{str(e)}'"
