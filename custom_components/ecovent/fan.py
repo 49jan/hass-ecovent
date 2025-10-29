@@ -535,6 +535,34 @@ class EcoVentFan(FanEntity):
         else:
             return [None, None]
 
+    def parse_machine_time(self, input_hex: str) -> str:
+        """
+        Parses machine time from hex string.
+
+        Supports:
+        - 3-byte format: [minutes, hours, days]
+        - 4-byte format: [minutes, hours, days_low, days_high] (little-endian for days)
+        """
+
+        # Parse hex string to bytes, length automatic
+        try:
+            val = int(input_hex, 16).to_bytes((len(input_hex) + 1) // 2, "big")
+        except ValueError:
+            return f"Invalid input hex: {input_hex}"
+
+        if len(val) == 3:
+            # 3-byte format
+            minutes, hours, days = val[0], val[1], val[2]
+        elif len(val) == 4:
+            # 4-byte format
+            minutes, hours = val[0], val[1]
+            # Last two bytes = days (little-endian)
+            days = int.from_bytes(val[2:4], "little")
+        else:
+            raise ValueError(f"Unexpected input length: {len(val)} bytes")
+
+        return f"{days}d {hours}h {minutes}m"
+
     def send(self, data):
         self.socket = self.connect()
         payload = self.get_header() + data
@@ -905,8 +933,7 @@ class EcoVentFan(FanEntity):
     def filter_timer_countdown(self, input):
         result = ""
         try:
-            val = int(input, 16).to_bytes(3, "big")
-            result = str(val[2]) + "d " + str(val[1]) + "h " + str(val[0]) + "m "
+            result = self.parse_machine_time(input)
         except Exception as e:
             LOG.error(
                 f"Cannot parse filter_timer_countdown value '{str(input)}': '{str(e)}'"
@@ -1002,15 +1029,7 @@ class EcoVentFan(FanEntity):
     def machine_hours(self, input):
         result = ""
         try:
-            val = int(input, 16).to_bytes(4, "big")
-            result = (
-                str(int.from_bytes(val[2:3], "big"))
-                + "d "
-                + str(val[1])
-                + "h "
-                + str(val[0])
-                + "m "
-            )
+            result = self.parse_machine_time(input)
         except Exception as e:
             LOG.error(f"Cannot parse machine_hours value '{str(input)}': '{str(e)}'")
             result = "Unknown value"
