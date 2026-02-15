@@ -1,5 +1,6 @@
 
 MY_DOMAIN = "ecovent"
+DOMAIN = MY_DOMAIN
 
 """ Service constants"""
 SERVICE_CLEAR_FILTER_REMINDER = "clear_filter_reminder"

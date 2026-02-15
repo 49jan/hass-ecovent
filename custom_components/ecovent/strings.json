@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up EcoVent",
+        "description": "Connect your EcoVent/Blauberg ventilation device.",
+        "data": {
+          "name": "Name",
+          "ip_address": "IP address",
+          "device_id": "Device ID",
+          "port": "Port",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect to the device.",
+      "invalid_host": "Invalid IP address.",
+      "unknown": "Unexpected error."
+    },
+    "abort": {
+      "already_configured": "This EcoVent device is already configured.",
+      "cannot_connect": "Could not import because the device is unreachable."
+    }
+  }
+}

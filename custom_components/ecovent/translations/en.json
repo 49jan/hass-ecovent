@@ -1,0 +1,70 @@
+{
+  "entity": {
+    "fan": {
+      "main": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "ventilation": "Ventilation",
+              "heat_recovery": "Heat recovery",
+              "air_supply": "Air supply"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "filter_timer_countdown": {
+        "name": "Filter timer countdown"
+      },
+      "machine_hours": {
+        "name": "Machine hours"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "unit_type": {
+        "name": "Unit type"
+      },
+      "wifi_name": {
+        "name": "Wi-Fi name"
+      },
+      "wifi_operation_mode": {
+        "name": "Wi-Fi operation mode"
+      },
+      "wifi_enc_type": {
+        "name": "Wi-Fi encryption"
+      },
+      "wifi_dhcp": {
+        "name": "Wi-Fi DHCP"
+      },
+      "wifi_assigned_ip": {
+        "name": "Wi-Fi assigned IP"
+      },
+      "wifi_current_ip": {
+        "name": "Wi-Fi current IP"
+      },
+      "humidity": {
+        "name": "Humidity"
+      }
+    },
+    "binary_sensor": {
+      "filter_replacement_required": {
+        "name": "Filter replacement required"
+      },
+      "alarm_active": {
+        "name": "Alarm active"
+      }
+    },
+    "select": {
+      "airflow_mode": {
+        "name": "Airflow mode",
+        "state": {
+          "ventilation": "Ventilation",
+          "heat_recovery": "Heat recovery",
+          "air_supply": "Air supply"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "entity": {
+    "fan": {
+      "main": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "ventilation": "Ventilación",
+              "heat_recovery": "Recuperación de calor",
+              "air_supply": "Impulsión de aire"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "filter_timer_countdown": {
+        "name": "Tiempo restante del filtro"
+      },
+      "machine_hours": {
+        "name": "Horas de funcionamiento"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "unit_type": {
+        "name": "Tipo de unidad"
+      },
+      "wifi_name": {
+        "name": "Nombre de Wi-Fi"
+      },
+      "wifi_operation_mode": {
+        "name": "Modo de operación Wi-Fi"
+      },
+      "wifi_enc_type": {
+        "name": "Cifrado Wi-Fi"
+      },
+      "wifi_dhcp": {
+        "name": "DHCP Wi-Fi"
+      },
+      "wifi_assigned_ip": {
+        "name": "IP asignada de Wi-Fi"
+      },
+      "wifi_current_ip": {
+        "name": "IP actual de Wi-Fi"
+      },
+      "humidity": {
+        "name": "Humedad"
+      }
+    },
+    "binary_sensor": {
+      "filter_replacement_required": {
+        "name": "Se requiere reemplazo de filtro"
+      },
+      "alarm_active": {
+        "name": "Alarma activa"
+      }
+    },
+    "select": {
+      "airflow_mode": {
+        "name": "Modo de flujo de aire",
+        "state": {
+          "ventilation": "Ventilación",
+          "heat_recovery": "Recuperación de calor",
+          "air_supply": "Impulsión de aire"
+        }
+      }
+    }
+  }
+}
