@@ -68,54 +68,68 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 
 # pylint: disable=unused-argument
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Initialize the EcoVent fans from config."""
-    name = config.get(CONF_NAME)
-    device_id = config.get(CONF_DEVICE_ID)
-    device_ip_address = config.get(CONF_IP_ADDRESS)
-    device_port = config.get(CONF_PORT)
-    device_pass = config.get(CONF_PASSWORD)
-
-    fan = EcoVentFan(
-        hass, config, device_ip_address, device_pass, device_id, name, device_port
-    )
-
+    """Initialize EcoVent fan from YAML config."""
+    fan = _create_fan_entity(hass, config)
     async_add_entities([fan], update_before_add=True)
-
-    # expose service call APIs
-    # component = EntityComponent(LOG, MY_DOMAIN, hass)
-    component = entity_platform.async_get_current_platform()
-
-    component.async_register_entity_service(
-        SERVICE_SET_AIRFLOW,
-        {vol.Required(ATTR_AIRFLOW): cv.string},
-        "async_set_airflow",
-    )
-
-    component.async_register_entity_service(
-        SERVICE_HUMIDITY_SENSOR_TURN_ON,
-        {},
-        "async_humidity_sensor_turn_on",
-    )
-    component.async_register_entity_service(
-        SERVICE_HUMIDITY_SENSOR_TURN_OFF,
-        {},
-        "async_humidity_sensor_turn_off",
-    )
-    component.async_register_entity_service(
-        SERVICE_SET_HUMIDITY_SENSOR_TRESHOLD_PERCENTAGE,
-        {
-            vol.Required(ATTR_PERCENTAGE): vol.All(
-                vol.Coerce(int), vol.Range(min=0, max=100)
-            )
-        },
-        "async_set_humidity_sensor_treshold_percentage",
-    )
-
-    component.async_register_entity_service(
-        SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder"
-    )
+    _async_register_entity_services()
 
     return True
+
+
+async def async_setup_entry(hass, entry, async_add_entities):
+    """Initialize EcoVent fan from config entry."""
+    fan = _create_fan_entity(hass, entry.data)
+    async_add_entities([fan], update_before_add=True)
+    _async_register_entity_services()
+
+    return True
+
+
+def _create_fan_entity(hass, cfg):
+    return EcoVentFan(
+        hass,
+        cfg,
+        cfg.get(CONF_IP_ADDRESS),
+        cfg.get(CONF_PASSWORD),
+        cfg.get(CONF_DEVICE_ID),
+        cfg.get(CONF_NAME),
+        cfg.get(CONF_PORT),
+    )
+
+
+def _async_register_entity_services() -> None:
+    component = entity_platform.async_get_current_platform()
+    try:
+        component.async_register_entity_service(
+            SERVICE_SET_AIRFLOW,
+            {vol.Required(ATTR_AIRFLOW): cv.string},
+            "async_set_airflow",
+        )
+        component.async_register_entity_service(
+            SERVICE_HUMIDITY_SENSOR_TURN_ON,
+            {},
+            "async_humidity_sensor_turn_on",
+        )
+        component.async_register_entity_service(
+            SERVICE_HUMIDITY_SENSOR_TURN_OFF,
+            {},
+            "async_humidity_sensor_turn_off",
+        )
+        component.async_register_entity_service(
+            SERVICE_SET_HUMIDITY_SENSOR_TRESHOLD_PERCENTAGE,
+            {
+                vol.Required(ATTR_PERCENTAGE): vol.All(
+                    vol.Coerce(int), vol.Range(min=0, max=100)
+                )
+            },
+            "async_set_humidity_sensor_treshold_percentage",
+        )
+        component.async_register_entity_service(
+            SERVICE_CLEAR_FILTER_REMINDER, {}, "async_clear_filter_reminder"
+        )
+    except ValueError:
+        # Services are already registered for this platform instance.
+        pass
 
 
 """Library to handle communication with Wifi ecofan from TwinFresh / Blauberg"""
@@ -266,7 +280,9 @@ class EcoVentFan(FanEntity):
         self._password = password
 
         # HA attribute
-        self._attr_preset_modes = [PRESET_MODE_ON]
+        self._attr_translation_key = "main"
+        self._attr_preset_modes = list(self.airflows.values())
+        self._attr_preset_mode = None
         self._state = self.states[0]
         self._speed = self.speeds[0]  # Initialize speed
 
@@ -306,9 +322,7 @@ class EcoVentFan(FanEntity):
                     percentage = 33  # Set to LOW
                 await self.async_set_percentage(percentage)
 
-            if preset_mode is None:
-                await self.async_set_preset_mode(PRESET_MODE_ON)  # Set to defalut
-            else:
+            if preset_mode is not None:
                 await self.async_set_preset_mode(preset_mode)
 
             self.turn_on_ventilation()
@@ -338,12 +352,31 @@ class EcoVentFan(FanEntity):
 
     def set_preset_mode(self, preset_mode: str) -> None:
         LOG.info(f"Set async_set_preset_mode to: {preset_mode}")
-        self._attr_preset_mode = preset_mode
+        if preset_mode == PRESET_MODE_ON:
+            # Backward compatibility with previous implementation.
+            self.turn_on_ventilation()
+            return
 
+        if preset_mode not in self._attr_preset_modes:
+            raise ValueError(f"Unsupported preset mode: {preset_mode}")
+
+        self._attr_preset_mode = preset_mode
+        self._airflow = preset_mode
+        self.set_airflow(self.get_airflow_number_by_name_sync(preset_mode))
+        self.turn_on_ventilation()
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set one of the selectable airflow presets from the UI."""
         if preset_mode == PRESET_MODE_ON:
             self.turn_on_ventilation()
-        else:
-            self.turn_off()
+            return
+
+        if preset_mode not in self._attr_preset_modes:
+            raise ValueError(f"Unsupported preset mode: {preset_mode}")
+
+        await self.async_set_airflow(preset_mode)
+        self._attr_preset_mode = preset_mode
+        self.turn_on_ventilation()
 
     async def async_set_percentage(self, percentage: int) -> None:
         LOG.info(f"async_set_percentage: {percentage}")
@@ -356,10 +389,17 @@ class EcoVentFan(FanEntity):
 
     async def async_set_airflow(self, airflow: str):
         """Set the airflow of the fan."""
+        if airflow not in self.airflows.values():
+            raise ValueError(f"Unsupported airflow mode: {airflow}")
         self._airflow = airflow
-        self.set_airflow(await self.get_airflow_number_by_name(airflow))
+        self._attr_preset_mode = airflow
+        self.set_airflow(self.get_airflow_number_by_name_sync(airflow))
+        self.async_write_ha_state()
 
     async def get_airflow_number_by_name(self, airflow: str):
+        return list(self.airflows.values()).index(airflow)
+
+    def get_airflow_number_by_name_sync(self, airflow: str) -> int:
         return list(self.airflows.values()).index(airflow)
 
     async def async_humidity_sensor_turn_on(self):
@@ -1134,6 +1174,7 @@ class EcoVentFan(FanEntity):
     def airflow(self, input):
         val = int(input, 16)
         self._airflow = self.airflows[val]
+        self._attr_preset_mode = self._airflow
 
     @property
     def analogV_treshold(self):

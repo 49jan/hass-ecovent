@@ -1,0 +1,70 @@
+{
+  "entity": {
+    "fan": {
+      "main": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "ventilation": "Ventilation",
+              "heat_recovery": "Värmeåtervinning",
+              "air_supply": "Tilluft"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "filter_timer_countdown": {
+        "name": "Återstående filtertid"
+      },
+      "machine_hours": {
+        "name": "Drifttimmar"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "unit_type": {
+        "name": "Enhetstyp"
+      },
+      "wifi_name": {
+        "name": "Wi-Fi-namn"
+      },
+      "wifi_operation_mode": {
+        "name": "Wi-Fi-driftläge"
+      },
+      "wifi_enc_type": {
+        "name": "Wi-Fi-kryptering"
+      },
+      "wifi_dhcp": {
+        "name": "Wi-Fi-DHCP"
+      },
+      "wifi_assigned_ip": {
+        "name": "Wi-Fi tilldelad IP"
+      },
+      "wifi_current_ip": {
+        "name": "Wi-Fi aktuell IP"
+      },
+      "humidity": {
+        "name": "Luftfuktighet"
+      }
+    },
+    "binary_sensor": {
+      "filter_replacement_required": {
+        "name": "Filterbyte krävs"
+      },
+      "alarm_active": {
+        "name": "Larm aktivt"
+      }
+    },
+    "select": {
+      "airflow_mode": {
+        "name": "Luftflödesläge",
+        "state": {
+          "ventilation": "Ventilation",
+          "heat_recovery": "Värmeåtervinning",
+          "air_supply": "Tilluft"
+        }
+      }
+    }
+  }
+}

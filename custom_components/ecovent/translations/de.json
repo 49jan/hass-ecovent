@@ -1,0 +1,70 @@
+{
+  "entity": {
+    "fan": {
+      "main": {
+        "state_attributes": {
+          "preset_mode": {
+            "state": {
+              "ventilation": "Lüftung",
+              "heat_recovery": "Wärmerückgewinnung",
+              "air_supply": "Zuluft"
+            }
+          }
+        }
+      }
+    },
+    "sensor": {
+      "filter_timer_countdown": {
+        "name": "Filter-Timer Restzeit"
+      },
+      "machine_hours": {
+        "name": "Betriebsstunden"
+      },
+      "firmware": {
+        "name": "Firmware"
+      },
+      "unit_type": {
+        "name": "Gerätetyp"
+      },
+      "wifi_name": {
+        "name": "WLAN-Name"
+      },
+      "wifi_operation_mode": {
+        "name": "WLAN-Betriebsmodus"
+      },
+      "wifi_enc_type": {
+        "name": "WLAN-Verschlüsselung"
+      },
+      "wifi_dhcp": {
+        "name": "WLAN-DHCP"
+      },
+      "wifi_assigned_ip": {
+        "name": "WLAN zugewiesene IP"
+      },
+      "wifi_current_ip": {
+        "name": "WLAN aktuelle IP"
+      },
+      "humidity": {
+        "name": "Luftfeuchtigkeit"
+      }
+    },
+    "binary_sensor": {
+      "filter_replacement_required": {
+        "name": "Filterwechsel erforderlich"
+      },
+      "alarm_active": {
+        "name": "Alarm aktiv"
+      }
+    },
+    "select": {
+      "airflow_mode": {
+        "name": "Luftstrommodus",
+        "state": {
+          "ventilation": "Lüftung",
+          "heat_recovery": "Wärmerückgewinnung",
+          "air_supply": "Zuluft"
+        }
+      }
+    }
+  }
+}
